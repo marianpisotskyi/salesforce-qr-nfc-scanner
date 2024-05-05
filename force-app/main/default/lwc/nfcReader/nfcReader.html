@@ -1,0 +1,30 @@
+<template>
+    <lightning-card title="NFC Reader Service" icon-name="utility:anywhere_alert">
+        <div class="slds-text-heading_medium slds-align_absolute-center slds-text-align_center slds-m-bottom_small">Choose an action to perform on an NFC tag:</div>
+        <div class="slds-var-m-horizontal_medium slds-align_absolute-center">
+            <lightning-button
+                variant="brand"
+                label="Read" 
+                title="Read the content of an NFC tag"
+                onclick={handleReadClick}>
+            </lightning-button>
+            <lightning-button
+                variant="brand"
+                label="Erase" 
+                title="Erase the content of an NFC tag"
+                onclick={handleEraseClick} 
+                class="slds-var-m-left_x-small">
+            </lightning-button>
+            <lightning-button
+                variant="brand"
+                label="Write" 
+                title="Write sample content to an NFC tag"
+                onclick={handleWriteClick} 
+                class="slds-var-m-left_x-small">
+            </lightning-button>
+        </div>
+        <div class="slds-var-m-around_medium slds-align_absolute-center">
+            <lightning-formatted-text value={status}></lightning-formatted-text>
+        </div>
+    </lightning-card>    
+  </template>
