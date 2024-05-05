@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="QR Scanner Service" icon-name="utility:photo">
+        <div class="slds-text-heading_medium slds-align_absolute-center slds-text-align_center slds-m-bottom_small">
+            Tap Start a Scanning Session to open a barcode scanner camera view. Position barcodes in the scanner view to scan them.<br></br>
+            Continue scanning items. Tap Done when you are done scanning.
+        </div>
+        <div class="slds-var-m-horizontal_medium slds-align_absolute-center">
+            <lightning-button
+                variant="brand"
+                class="slds-var-m-left_x-small"
+                icon-name="utility:scan"
+                label="Start a Scanning Session"
+                title="Start scanning barcodes, until there are no more barcodes to scan"
+                onclick={beginScanning}>
+            </lightning-button>
+        </div>
+        <div class="slds-var-m-around_medium slds-align_absolute-center">
+            Scanned barcode values are: {scannedBarcodesAsString}
+        </div>
+    </lightning-card>    
+</template>
