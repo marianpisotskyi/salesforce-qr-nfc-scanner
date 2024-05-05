@@ -13,4 +13,9 @@ export default class NfcQrApp extends LightningElement {
         this.showMainMenu = false;
         this.showNfcReader = true;
     }
+
+    handleQrScannerClick() {
+        this.showMainMenu = false;
+        this.showQrScanner = true;
+    }
 }
