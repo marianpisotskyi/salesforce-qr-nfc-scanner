@@ -1,84 +1,121 @@
 import { LightningElement } from 'lwc';
 import { getNfcService } from 'lightning/mobileCapabilities';
 
+const URI = 'uri';
+const TEXT = 'text';
+
 export default class NfcReader extends LightningElement {
+    showNfcMenu = false;
     status;
     nfcService;
+    type;
+    textValue;
+
+    uri = URI;
+    text = TEXT;
 
     connectedCallback() {
       this.nfcService = getNfcService();
+      this.showNfcMenu = true;
+    }
+
+    get options() {
+        return [
+            { label: 'URI', value: this.uri },
+            { label: 'Text', value: this.text }
+        ];
+    }
+
+    handleTypeChange(event) {
+        this.type = event.detail.value;
+    }
+
+    get showTextInput() {
+        return this.type?.length > 0;
+    }
+
+    handleTextInputChange(event) {
+        this.textValue = event.detail.value;
+    }
+
+    get showSaveButton() {
+        return this.textValue?.length > 0;
     }
 
     handleReadClick() {
-      if(this.nfcService.isAvailable()) {
-        const options = {
-          "instructionText": "Hold your phone near the tag to read.",
-          "successText": "Tag read successfully!"
-        };
-        this.nfcService.read(options)
-          .then((result) => {
-            this.status = JSON.stringify(result, undefined, 2);
-          })
-          .catch((error) => {
-            this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
-          });
-      } else {
-        this.status = 'Problem initiating NFC service. Are you using a mobile device?';
-      }
+        if (this.nfcService.isAvailable()) {
+            const options = {
+                "instructionText": "Hold your phone near the tag to read.",
+                "successText": "Tag read successfully!"
+            };
+
+            this.nfcService.read(options)
+                .then((result) => {
+                    this.status = JSON.stringify(result, undefined, 2);
+                })
+                .catch((error) => {
+                    this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
+                });
+        } else {
+            this.status = 'Problem initiating NFC service. Are you using a mobile device?';
+        }
     }
 
     handleEraseClick() {
-      if (this.nfcService.isAvailable()) {
-        const options = {
-          "instructionText": "Hold your phone near the tag to erase.",
-          "successText": "Tag erased successfully!"
-        };
+        if (this.nfcService.isAvailable()) {
+            const options = {
+                "instructionText": "Hold your phone near the tag to erase.",
+                "successText": "Tag erased successfully!"
+            };
 
-        this.nfcService.erase(options)
-          .then(() => {
-            this.status = "Tag erased successfully!";
-          })
-          .catch((error) => {
-            // TODO: Handle errors
-            this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
-          });
-      } else {
-        this.status = 'Problem initiating NFC service. Are you using a mobile device?';
-      }
+            this.nfcService.erase(options)
+                .then(() => {
+                    this.status = "Tag erased successfully!";
+            })
+            .catch((error) => {
+                // TODO: Handle errors
+                this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
+            });
+        } else {
+            this.status = 'Problem initiating NFC service. Are you using a mobile device?';
+        }
     }
 
-    async handleWriteClick() {
-      if (this.nfcService.isAvailable()) {
-        const options = {
-          "instructionText": "Hold your phone near the tag to write.",
-          "successText": "Tag written successfully!"
-        };
+    handleWriteClick() {
+        this.showNfcMenu = false;    
+    }
 
-        const payload = await this.createWritePayload();
+    async handleWrite() {
+        if (this.nfcService.isAvailable()) {
+            const options = {
+                "instructionText": "Hold your phone near the tag to write.",
+                "successText": "Tag written successfully!"
+            };
+
+            const payload = await this.createWritePayload();
         
-        this.nfcService.write(payload, options)
-          .then(() => {
-            this.status = "Tag written successfully!";
-          })
-          .catch((error) => {
-            // TODO: Handle errors
-            this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
-          });
-      } else {
-        this.status = 'Problem initiating NFC service. Are you using a mobile device?';
-      }
+            this.nfcService.write(payload, options)
+                .then(() => {
+                    this.status = "Tag written successfully!";
+                })
+                .catch((error) => {
+                    // TODO: Handle errors
+                    this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
+                });
+        } else {
+            this.status = 'Problem initiating NFC service. Are you using a mobile device?';
+        }
     }
 
     async createWritePayload() {
-      // Here we demonstrate how you can write several records to an NFC tag.
-      // Consider the scenario where you want to write the content of a business card
-      // to an NFC tag. The content can be broken down into a number of text and uri records.
-      const nameRecord = await this.nfcService.createTextRecord({text: "John Smith", langId: "en"});
-      const phone1Record = await this.nfcService.createTextRecord({text: "(123) 456-7890 Office", langId: "en"});
-      const phone2Record = await this.nfcService.createTextRecord({text: "(321) 654-0987 Direct", langId: "en"});
-      const emailRecord = await this.nfcService.createUriRecord("mailto:john.smith@email.com");
-      const addressRecord = await this.nfcService.createTextRecord({text: "584 South Paris Hill Ave., Lancaster, CA 93535", langId: "en"});
-      const websiteRecord = await this.nfcService.createUriRecord("https://www.mycompany.com");
-      return [nameRecord, phone1Record, phone2Record, emailRecord, addressRecord, websiteRecord];
+      let record;
+
+      if (this.type === this.uri) {
+        record = await this.nfcService.createUriRecord(this.textValue);
+      } else {
+        record = await this.nfcService.createTextRecord({text: this.textValue, langId: "en"});
+      }
+      
+      return [record];
     }
 }
