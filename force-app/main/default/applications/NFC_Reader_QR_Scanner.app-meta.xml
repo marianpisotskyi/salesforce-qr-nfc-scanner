@@ -14,6 +14,8 @@
     <label>NFC Reader &amp; QR Scanner</label>
     <navType>Standard</navType>
     <tabs>NFC_Reader_QR_Scanner</tabs>
+    <tabs>QR_Scan__c</tabs>
+    <tabs>NFC_Action__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>NFC_Reader_QR_Scanner_UtilityBar</utilityBar>
 </CustomApplication>
