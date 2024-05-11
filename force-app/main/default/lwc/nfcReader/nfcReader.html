@@ -1,7 +1,7 @@
 <template>
     <lightning-card title="NFC Reader Service" icon-name="utility:anywhere_alert">
         <template lwc:if={showNfcMenu}>
-            <div class="slds-text-heading_medium slds-align_absolute-center slds-text-align_center slds-m-bottom_small">Choose an action to perform on an NFC tag:</div>
+            <div class="slds-text-heading_base slds-align_absolute-center slds-text-align_center slds-m-bottom_small">Choose an action to perform on an NFC tag:</div>
             <div class="slds-var-m-horizontal_medium slds-align_absolute-center">
                 <lightning-button
                     variant="brand"
@@ -33,6 +33,7 @@
                     placeholder="Choose type to write"
                     options={options}
                     onchange={handleTypeChange}
+                    dropdown-alignment="auto"
                     required>
             </lightning-combobox>
             </div>
@@ -41,6 +42,8 @@
             <template lwc:if={showTextInput}>
                 <lightning-input type="text" label="Enter text to write" onchange={handleTextInputChange}></lightning-input>
             </template>
+        </div>
+        <div class="slds-align_absolute-center slds-m-top_medium">
             <template lwc:if={showSaveButton}>
                 <lightning-button
                     variant="brand"
@@ -51,8 +54,12 @@
                 </lightning-button>
             </template>
         </div>
-        <div class="slds-var-m-around_medium slds-align_absolute-center">
-            <lightning-formatted-text value={status}></lightning-formatted-text>
+    </lightning-card>  
+    <div class="slds-grid slds-wrap slds-m-horizontal_medium">
+        <div class="slds-col">
+            <div class="slds-m-around_medium">
+                <lightning-formatted-text value={status}></lightning-formatted-text>
+            </div>
         </div>
-    </lightning-card>    
+    </div>  
   </template>

@@ -1,5 +1,6 @@
 import { LightningElement } from 'lwc';
 import { getNfcService } from 'lightning/mobileCapabilities';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const URI = 'uri';
 const TEXT = 'text';
@@ -43,10 +44,12 @@ export default class NfcReader extends LightningElement {
     }
 
     handleReadClick() {
+        this.status = '';
+
         if (this.nfcService.isAvailable()) {
             const options = {
-                "instructionText": "Hold your phone near the tag to read.",
-                "successText": "Tag read successfully!"
+                'instructionText': 'Hold your phone near the tag to read.',
+                'successText': 'Tag read successfully!'
             };
 
             this.nfcService.read(options)
@@ -55,29 +58,41 @@ export default class NfcReader extends LightningElement {
                 })
                 .catch((error) => {
                     this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
+
+                    this.showToast('Error', this.status, 'error');
                 });
         } else {
             this.status = 'Problem initiating NFC service. Are you using a mobile device?';
+
+            this.showToast('Error', this.status, 'error');
         }
     }
 
     handleEraseClick() {
+        this.status = '';
+
         if (this.nfcService.isAvailable()) {
             const options = {
-                "instructionText": "Hold your phone near the tag to erase.",
-                "successText": "Tag erased successfully!"
+                'instructionText': 'Hold your phone near the tag to erase.',
+                'successText': 'Tag erased successfully!'
             };
 
             this.nfcService.erase(options)
                 .then(() => {
-                    this.status = "Tag erased successfully!";
-            })
-            .catch((error) => {
-                // TODO: Handle errors
-                this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
-            });
+                    this.status = 'Tag erased successfully!';
+
+                    this.showToast('Success', this.status, 'success');
+                })
+                .catch((error) => {
+                    // TODO: Handle errors
+                    this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
+                    
+                    this.showToast('Error', this.status, 'error');
+                });
         } else {
             this.status = 'Problem initiating NFC service. Are you using a mobile device?';
+
+            this.showToast('Error', this.status, 'error');
         }
     }
 
@@ -86,6 +101,8 @@ export default class NfcReader extends LightningElement {
     }
 
     async handleWrite() {
+        this.status = '';
+
         if (this.nfcService.isAvailable()) {
             const options = {
                 "instructionText": "Hold your phone near the tag to write.",
@@ -99,11 +116,14 @@ export default class NfcReader extends LightningElement {
                     this.status = "Tag written successfully!";
                 })
                 .catch((error) => {
-                    // TODO: Handle errors
                     this.status = 'Error code: ' + error.code + '\nError message: ' + error.message;
+
+                    this.showToast('Error', this.status, 'error');
                 });
         } else {
             this.status = 'Problem initiating NFC service. Are you using a mobile device?';
+
+            this.showToast('Error', this.status, 'error');
         }
     }
 
@@ -117,5 +137,15 @@ export default class NfcReader extends LightningElement {
       }
       
       return [record];
+    }
+
+    showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+            title,
+            message,
+            variant,
+        });
+
+        this.dispatchEvent(event);
     }
 }
