@@ -155,8 +155,9 @@
     <externalSharingModel>Private</externalSharingModel>
     <label>NFC Action</label>
     <nameField>
+        <displayFormat>NFC-{0000}</displayFormat>
         <label>NFC Action Name</label>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>NFC Actions</pluralLabel>
     <searchLayouts></searchLayouts>

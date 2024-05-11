@@ -155,8 +155,9 @@
     <externalSharingModel>Private</externalSharingModel>
     <label>QR Scan</label>
     <nameField>
+        <displayFormat>QR-{0000}</displayFormat>
         <label>QR Scan Name</label>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>QR Scans</pluralLabel>
     <searchLayouts></searchLayouts>
