@@ -1,7 +1,7 @@
 <template>
     <template lwc:if={showMainMenu}>
         <lightning-card title="NFC &amp; QR Menu" icon-name="utility:locker_service_console">
-            <div class="slds-text-heading_medium slds-text-align_center slds-m-bottom_small">Select an app</div>
+            <div class="slds-text-heading_base slds-text-align_center slds-m-bottom_small">Select an app</div>
             <div class="slds-form-element__control slds-align_absolute-center">
                 <div>
                     <lightning-button 
@@ -25,5 +25,18 @@
     </template>
     <template lwc:if={showQrScanner}>
         <c-qr-scanner></c-qr-scanner>
+    </template>
+    <template lwc:if={showExchangeRates}>
+        <lightning-datatable data={exchangeRates} columns={columns} key-field="cc" hide-checkbox-column></lightning-datatable>
+    </template>
+    <template lwc:if={showNavigationButton}>
+        <div class="slds-float_left slds-m-bottom_large">
+            <lightning-button
+                label="Back"
+                title="Back"
+                onclick={handleGoToMainMenu}
+                icon-name="utility:arrow_left">
+            </lightning-button>
+        </div>
     </template>
 </template>
