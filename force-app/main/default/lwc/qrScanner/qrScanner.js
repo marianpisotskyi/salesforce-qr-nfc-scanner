@@ -1,5 +1,7 @@
 import { LightningElement, track } from 'lwc';
 import { getBarcodeScanner } from 'lightning/mobileCapabilities';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import createQrScan from '@salesforce/apex/QrScannerController.createQrScan';
 
 export default class QrScanner extends LightningElement {
     barcodeScanner;
@@ -35,8 +37,9 @@ export default class QrScanner extends LightningElement {
                     this.barcodeScanner.dismiss();
                 });
         } else {
-            // TODO: add showToast
-            console.log("QR Scanner unavailable. Non-mobile device?");
+            let status = 'QR Scanner unavailable. Are you using a mobile device?';
+
+            this.showToast('Error', status, 'error');
         }
     }
 
@@ -45,14 +48,36 @@ export default class QrScanner extends LightningElement {
     }
 
     processError(error) {
-        if (error.code == "USER_DISMISSED") {
-            console.log("User terminated scanning session.");
-        } else {
-            console.error(error);
+        if (error.code != "USER_DISMISSED") {
+            this.showToast('Error', error, 'error');
         }
+    }
+
+    handleSave() {
+        createQrScan({qrCodes : this.scannedBarcodesAsString})
+            .then(() => {
+                this.showToast('Success', 'Successfully saved scan', 'success');
+            })
+            .catch((error) => {
+                this.showToast('Error', JSON.stringify(error.body), 'error');
+            })
+    }
+
+    showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+            title,
+            message,
+            variant,
+        });
+
+        this.dispatchEvent(event);
     }
 
     get scannedBarcodesAsString() {
         return this.scannedBarcodes.map((barcode) => barcode.value).join(', ');
+    }
+
+    get showBarcodeValues() {
+        return this.scannedBarcodesAsString?.length > 0;
     }
 }

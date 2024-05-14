@@ -1,6 +1,6 @@
 <template>
     <lightning-card title="QR Scanner Service" icon-name="utility:photo">
-        <div class="slds-text-heading_medium slds-align_absolute-center slds-text-align_center slds-m-bottom_small">
+        <div class="slds-text-heading_base slds-align_absolute-center slds-text-align_center slds-m-bottom_small">
             Tap Start a Scanning Session to open a barcode scanner camera view. Position barcodes in the scanner view to scan them.<br></br>
             Continue scanning items. Tap Done when you are done scanning.
         </div>
@@ -14,8 +14,27 @@
                 onclick={beginScanning}>
             </lightning-button>
         </div>
-        <div class="slds-var-m-around_medium slds-align_absolute-center">
-            Scanned barcode values are: {scannedBarcodesAsString}
+    </lightning-card>
+    <div class="slds-grid slds-wrap slds-m-horizontal_medium">
+        <div class="slds-col">
+            <div class="slds-m-around_medium">
+                <template lwc:if={showBarcodeValues}>
+                    Scanned barcode values are: 
+                </template>
+                
+                <lightning-formatted-text value={scannedBarcodesAsString}></lightning-formatted-text>
+            </div>
+            <div class="slds-align_absolute-center">
+                <template lwc:if={showBarcodeValues}>
+                    <lightning-button
+                        variant="brand"
+                        label="Save" 
+                        title="Save scanned barcode values"
+                        onclick={handleSave} 
+                        class="slds-var-m-left_x-small">
+                    </lightning-button>
+                </template>
+            </div>
         </div>
-    </lightning-card>    
+    </div> 
 </template>
